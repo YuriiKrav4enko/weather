@@ -1,7 +1,9 @@
 
 from typing import NamedTuple
 
+import config
 import geocoder
+from exceptions import CantGetCoordinates
 
 
 class Coordinates(NamedTuple):
@@ -11,18 +13,33 @@ class Coordinates(NamedTuple):
 
 def get_current_gps_coordinates() -> Coordinates:
     """Returns current coordinates using IP Add"""
+    coordinates = _get_geocoder_coordinates()
+    return _round_coordinates(coordinates)
+
+
+def _get_geocoder_coordinates() -> Coordinates:
     g = geocoder.ip('me')
-    if g.latlng is not None:  # g.latlng tells if the coordiates are found or not
-        return Coordinates(latitude=g.latlng[0], longitude=g.latlon[1])
-    else:
-        raise Exception()
+    latlng = g.latlng
+    if not latlng:
+        raise CantGetCoordinates
+    lat, lng = g.latlng
+    return Coordinates(latitude=lat, longitude=lng)
+
+
+def _round_coordinates(coordinates: Coordinates):
+    if not config.USE_ROUNDED_COORDS:
+        return coordinates
+    return Coordinates(*map(
+        lambda c: round(c, 1),
+        [coordinates.latitude, coordinates.longitude]
+    ))
 
 
 if __name__ == "__main__":
     coordinates = get_current_gps_coordinates()
-    if coordinates is not None:
+    try:
         print("Your current GPS coordinates are:")
         print(f"Latitude: {coordinates.latitude}")
         print(f"Longitude: {coordinates.longitude}")
-    else:
+    except CantGetCoordinates:
         print("Unable to retrieve your GPS coordinates.")
