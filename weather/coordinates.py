@@ -1,20 +1,28 @@
+
+from typing import NamedTuple
+
 import geocoder
 
 
-def get_current_gps_coordinates():
-    g = geocoder.ip('me')  #this function is used to find the current information using our IP Add
-    if g.latlng is not None:  #g.latlng tells if the coordiates are found or not
-        return g.latlng
+class Coordinates(NamedTuple):
+    latitude: float
+    longitude: float
+
+
+def get_current_gps_coordinates() -> Coordinates:
+    """Returns current coordinates using IP Add"""
+    g = geocoder.ip('me')
+    if g.latlng is not None:  # g.latlng tells if the coordiates are found or not
+        return Coordinates(latitude=g.latlng[0], longitude=g.latlon[1])
     else:
-        return None
+        raise Exception()
 
 
 if __name__ == "__main__":
     coordinates = get_current_gps_coordinates()
     if coordinates is not None:
-        latitude, longitude = coordinates
-        print(f"Your current GPS coordinates are:")
-        print(f"Latitude: {latitude}")
-        print(f"Longitude: {longitude}")
+        print("Your current GPS coordinates are:")
+        print(f"Latitude: {coordinates.latitude}")
+        print(f"Longitude: {coordinates.longitude}")
     else:
         print("Unable to retrieve your GPS coordinates.")
