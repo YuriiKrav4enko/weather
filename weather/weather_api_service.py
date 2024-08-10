@@ -138,4 +138,4 @@ def _parse_sun_time(
 
 
 if __name__ == "__main__":
-    print(get_weather(Coordinates(50.3, 30.4)))
+    print(get_weather(Coordinates(50.3, 30.4, 'Kyiv, UA', 'Kyiv')))

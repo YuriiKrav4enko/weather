@@ -9,6 +9,8 @@ from exceptions import CantGetCoordinates
 class Coordinates(NamedTuple):
     latitude: float
     longitude: float
+    address: str
+    city: str
 
 
 def get_current_gps_coordinates() -> Coordinates:
@@ -23,7 +25,7 @@ def _get_geocoder_coordinates() -> Coordinates:
     if not latlng:
         raise CantGetCoordinates
     lat, lng = g.latlng
-    return Coordinates(latitude=lat, longitude=lng)
+    return Coordinates(latitude=lat, longitude=lng, address=g.address, city=g.city)
 
 
 def _round_coordinates(coordinates: Coordinates):
@@ -32,7 +34,7 @@ def _round_coordinates(coordinates: Coordinates):
     return Coordinates(*map(
         lambda c: round(c, 1),
         [coordinates.latitude, coordinates.longitude]
-    ))
+    ), address=coordinates.address, city=coordinates.city)
 
 
 if __name__ == "__main__":
