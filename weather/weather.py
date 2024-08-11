@@ -1,8 +1,11 @@
 #!/usr/bin/env python3.11
+from pathlib import Path
+
 from coordinates import get_current_gps_coordinates
+from exceptions import ApiServiceError, CantGetCoordinates
+from history import JSONFileWeatherStorage, save_weather
 from weather_api_service import get_weather
 from weather_formatter import format_weather
-from exceptions import ApiServiceError, CantGetCoordinates
 
 
 def main():
@@ -20,6 +23,11 @@ def main():
         exit(1)
 
     print(format_weather(coordinates, weather))
+
+    save_weather(
+        coordinates, weather,
+        JSONFileWeatherStorage(Path.cwd() / "history.json")
+    )
 
 
 if __name__ == "__main__":
