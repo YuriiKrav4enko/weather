@@ -31,10 +31,10 @@ def _get_geocoder_coordinates() -> Coordinates:
 def _round_coordinates(coordinates: Coordinates):
     if not config.USE_ROUNDED_COORDS:
         return coordinates
-    return Coordinates(*map(
-        lambda c: round(c, 1),
-        [coordinates.latitude, coordinates.longitude]
-    ), address=coordinates.address, city=coordinates.city)
+    return Coordinates(
+        latitude=round(coordinates.latitude, config.COORDINATES_DECIMAL_PLACES),
+        longitude=round(coordinates.longitude, config.COORDINATES_DECIMAL_PLACES),
+        address=coordinates.address, city=coordinates.city)
 
 
 if __name__ == "__main__":

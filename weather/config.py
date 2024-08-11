@@ -1,4 +1,5 @@
 USE_ROUNDED_COORDS = True
+COORDINATES_DECIMAL_PLACES = 1
 
 OPENMETEO_URL = (
     "https://api.open-meteo.com/v1/forecast?"
