@@ -2,14 +2,13 @@ from weather_api_service import Weather
 from pathlib import Path
 from datetime import datetime
 from weather_formatter import format_weather
-from coordinates import Coordinates
 from typing import TypedDict
 import json
 
 
 class WeatherStorage:
     """Interface for any storage saving weather"""
-    def save(self, coordinates: Coordinates, weather: Weather) -> None:
+    def save(self, weather: Weather) -> None:
         raise NotImplementedError
 
 
@@ -18,9 +17,9 @@ class PlainFileWeatherStorage(WeatherStorage):
     def __init__(self, file: Path) -> None:
         self._file = file
 
-    def save(self, coordinates: Coordinates, weather: Weather) -> None:
+    def save(self, weather: Weather) -> None:
         now = datetime.now()
-        formatted_weather = format_weather(coordinates, weather)
+        formatted_weather = format_weather(weather)
         with open(self._file, "a") as f:
             f. write(f"{now}\n{formatted_weather}\n\n")
 
@@ -36,11 +35,11 @@ class JSONFileWeatherStorage(WeatherStorage):
         self._jsonfile = jsonfile
         self._init_storage()
 
-    def save(self, coordinates: Coordinates, weather: Weather) -> None:
+    def save(self, weather: Weather) -> None:
         history = self._read_history()
         history.append({
             "date": str(datetime.now()),
-            "weather": format_weather(coordinates, weather)
+            "weather": format_weather(weather)
         })
         self._write(history)
 
@@ -57,6 +56,6 @@ class JSONFileWeatherStorage(WeatherStorage):
             json.dump(history, f, ensure_ascii=False, indent=4)
         
 
-def save_weather(coordinates: Coordinates, weather: Weather, storage: WeatherStorage) -> None:
+def save_weather(weather: Weather, storage: WeatherStorage) -> None:
     """Saves weathre in the storage"""
-    storage.save(coordinates, weather)
+    storage.save(weather)

@@ -49,6 +49,7 @@ class Weather(NamedTuple):
     weather_type: WeatherType
     sunrise: datetime
     sunset: datetime
+    coordinates: Coordinates
 
 
 def get_weather(coordinates: Coordinates) -> Weather:
@@ -56,7 +57,7 @@ def get_weather(coordinates: Coordinates) -> Weather:
     openweather_response = _get_openmeteo_response(
         latitude=coordinates.latitude, longitude=coordinates.longitude
     )
-    weather = _parse_openmeteo_response(openweather_response)
+    weather = _parse_openmeteo_response(coordinates, openweather_response)
     return weather
 
 
@@ -71,16 +72,17 @@ def _get_openmeteo_response(latitude: float, longitude: float) -> str:
         raise ApiServiceError
 
 
-def _parse_openmeteo_response(openweather_response: str) -> Weather:
+def _parse_openmeteo_response(coordinates: Coordinates, openweather_response: str) -> Weather:
     try:
         openmeteo_dict = json.loads(openweather_response)
     except json.JSONDecodeError:
         raise ApiServiceError
     return Weather(
+        coordinates=coordinates,
         temperature=_parse_temperature(openmeteo_dict),
         weather_type=_parse_weather_code(openmeteo_dict),
         sunrise=_parse_sun_time(openmeteo_dict, 'sunrise'),
-        sunset=_parse_sun_time(openmeteo_dict, 'sunset')    )
+        sunset=_parse_sun_time(openmeteo_dict, 'sunset'))
 
 
 def _parse_temperature(openmeteo_dict: dict) -> Celsius:

@@ -2,9 +2,9 @@ from weather_api_service import Weather
 from coordinates import Coordinates
 
 
-def format_weather(coordinates: Coordinates, weather: Weather) -> str:
+def format_weather(weather: Weather) -> str:
     """Returns wather data in string"""
-    return (f"Weather at {coordinates.address}\n"
+    return (f"Weather at {weather.coordinates.address}\n"
             f"Temperature: {weather.temperature} °C, "
             f"{weather.weather_type.value}\n"
             f"Sunrise time: {weather.sunrise.strftime('%H:%M')}\n"
@@ -16,8 +16,8 @@ if __name__ == "__main__":
     from weather_api_service import WeatherType
 
     print(format_weather(
-        Coordinates(50.3, 30.4, 'Kyiv, UA', 'Kyiv'), 
         Weather(
+            coordinates=Coordinates(50.3, 30.4, 'Kyiv, UA', 'Kyiv'),
             temperature=25,
             weather_type=WeatherType.CLEAR,
             sunrise=datetime(2024, 8, 9, 5, 0),

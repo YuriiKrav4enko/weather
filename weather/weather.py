@@ -22,10 +22,10 @@ def main():
               f"{coordinates.longitude} coordinates")
         exit(1)
 
-    print(format_weather(coordinates, weather))
+    print(format_weather(weather))
 
     save_weather(
-        coordinates, weather,
+        weather,
         JSONFileWeatherStorage(Path.cwd() / "history.json")
     )
 
